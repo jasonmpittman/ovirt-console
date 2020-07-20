@@ -49,11 +49,10 @@ Run our local vnc viewer against the remote system
 '''
 def run_vnc(vnc_file, vnc_viewer):
     host, port, password = get_vnc_parameters(vnc_file)
-    print(password)
+    print('The password for 120s is: ' + password)
 
     exec_viewer = str(vnc_viewer) 
-    exec_options = ' ' + host + ':' + port 
-
+    exec_options = host + ':' + port  
     subprocess.run([exec_viewer,exec_options])
 
 '''
