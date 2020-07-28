@@ -14,9 +14,18 @@ __status__ = "Development"
 from pathlib import Path
 import subprocess
 import sys
+import platform
 import configparser
 
 config_file = 'config.ini'
+
+'''
+Get the OS platform {Linux, Darwin, or Windows}
+'''
+def get_os_platform():
+    os = platform.system()
+
+    return os
 
 '''
 Get the vnc configuration details
@@ -47,20 +56,30 @@ def get_vnc_parameters(vnc_file):
 '''
 Run our local vnc viewer against the remote system
 '''
-def run_vnc(vnc_file, vnc_viewer):
+def run_vnc(vnc_file, vnc_viewer, os):
     host, port, password = get_vnc_parameters(vnc_file)
     print('The password for 120s is: ' + password)
 
     exec_viewer = str(vnc_viewer) 
     exec_options = host + ':' + port  
-    subprocess.run([exec_viewer,exec_options])
+    
+    if os == 'Linux':
+        subprocess.run([exec_viewer,exec_options]) #this is WSL for now
+    elif os == 'Darwin':
+        subprocess.Popen('open', '-a', exec_viewer, exec_options)
+    elif os == 'Windows':
+        subprocess.run([exec_viewer,exec_options])
+    else:
+        print('Valid subprocess unavailable. Please check OS platform.')
+
 
 '''
 Entry point into our program
 '''
 def main():
+    os = get_os_platform()
     vnc_file, vnc_folder, vnc_viewer = get_vnc_config(config_file)
-    run_vnc(vnc_file, vnc_viewer)
-    
+    run_vnc(vnc_file, vnc_viewer, os)
+
 
 main()
