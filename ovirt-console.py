@@ -58,16 +58,18 @@ Run our local vnc viewer against the remote system
 '''
 def run_vnc(vnc_file, vnc_viewer, os):
     host, port, password = get_vnc_parameters(vnc_file)
-    print('The password for 120s is: ' + password)
+    print('The password for 120s is: ' + password)  
 
-    exec_viewer = str(vnc_viewer) 
-    exec_options = host + ':' + port  
-    
     if os == 'Linux':
+        exec_viewer = str(vnc_viewer) 
+        exec_options = host + ':' + port
         subprocess.run([exec_viewer,exec_options]) #this is WSL for now
     elif os == 'Darwin':
-        subprocess.Popen('open', '-a', exec_viewer, exec_options)
+        exec_options = 'vnc://' + host + ':' + port
+        subprocess.call(['/usr/bin/open', exec_options])#'vnc://172.16.0.28:5900'])
     elif os == 'Windows':
+        exec_viewer = str(vnc_viewer) 
+        exec_options = host + ':' + port
         subprocess.run([exec_viewer,exec_options])
     else:
         print('Valid subprocess unavailable. Please check OS platform.')
